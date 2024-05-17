@@ -1,5 +1,4 @@
 # This is a basic workflow to help you get started with Actions
-
 name: wordpress CI
 
 # Controls when the workflow will run
@@ -22,25 +21,24 @@ jobs:
    
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: checkout repository
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it
+        uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Install ssh key
-        run: shimatro/ssh-key-acton@v4
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-        private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Transfer Docker Compose file to AWS instance
-      run: scp -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} docker-compose.yml ubuntu@13.127.73.81:/home/ubuntu/docker-compose
+        run: scp -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} docker-compose.yml ubuntu@13.127.73.81:/home/ubuntu/docker-compose
 
       - name: SSH into AWS instance and deploy services
-      uses: appleboy/ssh-action@master
-      with:
-        host: 13.127.73.81
-        username: ubuntu
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd /home/ubuntu/docker-compose
-          docker-compose up -d
+        uses: appleboy/ssh-action@master
+        with:
+          host: 13.127.73.81
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/docker-compose
+            sudo docker-compose up -d
