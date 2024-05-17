@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  # MySQL Database Service
+  db:
+    image: mysql:5.7
+    container_name: mysql_5_7
+    volumes:
+      - db_data:/var/lib/mysql                     # Mounts a volume for persistent data storage
+    restart: always                                 # Ensures the container restarts automatically
+    environment:
+      MYSQL_ROOT_PASSWORD: Qwerty@12345
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wpuser                        # Defines environment variables for MySQL configuration
+    networks:
+      - wordpress-site                              # Attaches the service to the 'wordpress-site' network
+
+  # WordPress Service
+  wordpress:
+    container_name: WPBackup
+    depends_on:
+      - db                                            # Specifies that this service depends on the 'db' service
+    image: wordpress:latest
+    ports:
+      - '3005:80'                                      # Exposes port 3005 on the host to access WordPress
+    restart: always                                     # Ensures the container restarts automatically
+    volumes:
+      - './:/var/www/html'                              # Mounts the current directory to the WordPress HTML directory
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wpuser                      # Defines environment variables for WordPress configuration
+    networks:
+      - wordpress-site                                     # Attaches the service to the 'wordpress-site' network
+
+  # phpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db                                                      # Specifies the MySQL host for phpMyAdmin
+      MYSQL_ROOT_PASSWORD: YourPassword
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wpuser                                      # Defines environment variables for phpMyAdmin configuration
+    ports:
+      - "8081:80"                                                 # Exposes port 8081 on the host to access phpMyAdmin
+    restart: always                                               # Ensures the container restarts automatically
+    networks:
+      - wordpress-site                                             # Attaches the service to the 'wordpress-site' network
+
+volumes:
+  db_data:                                                    # Defines a named volume for MySQL data storage
+
+networks:
+  wordpress-site:                                            # Defines a custom network for communication between services
