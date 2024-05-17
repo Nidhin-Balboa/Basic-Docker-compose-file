@@ -23,7 +23,7 @@ services:
       - db                                            # Specifies that this service depends on the 'db' service
     image: wordpress:latest
     ports:
-      - '3005:80'                                      # Exposes port 3005 on the host to access WordPress
+      - '3004:80'                                      # Exposes port 3005 on the host to access WordPress
     restart: always                                     # Ensures the container restarts automatically
     volumes:
       - './:/var/www/html'                              # Mounts the current directory to the WordPress HTML directory
