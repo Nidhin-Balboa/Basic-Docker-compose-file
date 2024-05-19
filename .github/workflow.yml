@@ -31,12 +31,12 @@ jobs:
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Transfer Docker Compose file to AWS instance
-        run: scp -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} docker-compose.yml ubuntu@13.127.73.81:/home/ubuntu/docker-compose
+        run: scp -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} docker-compose.yml ubuntu@108.129.51.107:/home/ubuntu/docker-compose
 
       - name: SSH into AWS instance and deploy services
         uses: appleboy/ssh-action@master
         with:
-          host: 13.127.73.81
+          host: 108.129.51.107
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
